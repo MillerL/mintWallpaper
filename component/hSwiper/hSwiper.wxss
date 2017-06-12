@@ -1,0 +1,19 @@
+/*滑动样式*/
+.hSwiper{
+	height: 856rpx;
+	overflow: hidden;
+	position: relative;
+}
+
+.hSwiperCon{
+	height: 856rpx;
+	will-change: transform;
+	position: absolute;
+}
+.item{
+	width: 100%;
+	height: 100%;
+	position:relative;
+	float: left;
+	box-sizing:border-box;
+}

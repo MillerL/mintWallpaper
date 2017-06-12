@@ -1,0 +1,19 @@
+<import src="../../component/hSwiper/hSwiper.wxml"/>
+<import src="../../component/monthSwiper/monthSwiper.wxml"/>
+
+<view id="mainContainer">
+
+    <!--<view class="dateSwiper">
+      <view class="monthItem {{item.current ? 'currentMonth' : ''}}" wx:for="{{month}}"> 
+        <view class="m-num">{{item.num}}</view>
+        <view class="m-en">{{item.en}}</view>
+       </view>
+    </view>-->
+    <template is="monthSwiper" data="{{...monthSwiperVar}}"></template>
+    <template is="hSwiper" data="{{...hSwiperVar}}"></template>
+    
+    <view class="wpInfoCon">
+      <text class="infoTxt">{{infoTxt}}</text>
+      <text class="wpNum">{{wpNum}}</text>
+    </view>
+</view>

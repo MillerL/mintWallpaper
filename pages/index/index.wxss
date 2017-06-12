@@ -1,0 +1,56 @@
+@import "../../component/hSwiper/hSwiper.wxss";
+@import "../../component/monthSwiper/monthSwiper.wxss";
+
+
+/*滚动图*/
+text{
+  color:#4a4a4a;  
+}
+
+#mainContainer{
+    height: 100%;
+    width: 100%;
+}
+
+.wpInfoCon{
+  padding-top: 40rpx;
+}
+.infoTxt{
+  display: block;
+  font-size:24rpx;
+  text-align:center;
+}
+.wpNum{
+  display: block;
+  margin-top: 35rpx;
+  font-size:48rpx;
+  text-align:center;
+}
+.itemSelf{
+    height: 100%;
+    position: absolute;
+    box-sizing:border-box;
+    /*margin:10rpx;*/
+    /*padding: 10rpx;*/
+    overflow: hidden;
+    box-shadow: 0 0 1px 1px rgba(0,0,0,0.1);
+    height: 95%;
+    width: 96%;
+    background-color: #999;
+    color: white;
+}
+.dateSwiper{
+  /*width: 100%;*/
+  /*overflow: hidden;*/
+  height: 130rpx;
+  white-space:nowrap;
+  padding-top:16rpx;
+
+}
+.monthItem{
+  /*float: left;*/
+  /*width:100rpx;*/
+  /*display: inline-block;*/
+  /*margin-left: 44rpx;*/
+  
+}

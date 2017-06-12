@@ -1,0 +1,9 @@
+<template name="hSwiperItem">
+	<view class="itemSelf">
+      <image style="width: 100%; height:100%; background-color: #eeeeee;" mode="aspectFill" src="{{item.pic}}"></image>
+	</view>	
+</template>
+
+<template name="templateb">
+	{{item}}
+</template>
