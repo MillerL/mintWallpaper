@@ -1,0 +1,49 @@
+<!--preview.wxml-->
+<view class="container">
+  <canvas wx:if="{{false}}" style="width: 100%; height: 100%;" canvas-id="firstCanvas"></canvas>
+  <view class="main-pic">
+    <image style="width: 100%; height: 100%;" mode="aspectFill" src="{{src}}"></image>
+  </view>
+  <!--TWO BUTTONS-->
+  <view hidden="{{iconHide? true : false}}">
+    <view id="info-icon" bindtap="openAlert">
+      <image src="../../assets/img/info-icon.png"></image>
+    </view>
+    <view id="download-icon" bindtap="downloadPic">
+      <image src="../../assets/img/download_icon.png"></image>
+    </view>
+    <view id="view-icon" bindtap="openViewOption">
+      <image src="../../assets/img/view-icon.png"></image>
+    </view>
+  </view>
+  <!--IOS LOCK-SCREEN - PREVIEW-->
+  <view hidden="{{iosLockHide}}" bindtap="hideThisView" data-id="iosLockHide" class="iosLockHide">
+    <image class="ios-top" src="../../assets/img/ios-topBar.png"></image>
+    <view class="ios-middle">
+      <text class="ios-time">{{iosTime}}</text>
+    <text class="ios-date">{{iosDate}}</text>
+    </view>
+    <image class="ios-bottom" src="../../assets/img/ios-bottom.png"></image>
+  </view>
+  <!--IOS HOME - PREVIEW-->
+<view hidden="{{iosHomeHide}}" bindtap="hideThisView" data-id="iosHomeHide" class="iosHomeHide">
+    <image class="ios-top" src="../../assets/img/ios-topBar.png"></image>
+    <image class="iosHome-middle" src="../../assets/img/ios-home1.png"></image>
+    <image class="iosHome-bottom" src="../../assets/img/ios-home2.png"></image>
+  </view>
+  <!--ANDROID LOCK-SCREEN - PREVIEW-->
+  <view hidden="{{androidLockHide}}" bindtap="hideThisView" data-id="androidLockHide" class="androidLockHide">
+    <image class="android-top" src="../../assets/img/android-topBar.png"></image>
+    <view class="android-middle">
+      <text class="android-time">{{androidTime}}</text>
+    <text class="android-date">{{androidDate}}</text>
+    </view>
+    <image class="android-bottom" src="../../assets/img/android-bottom1.png"></image>
+  </view>
+  <!--ANDROID HOME - PREVIEW-->
+<view hidden="{{androidHomeHide}}" bindtap="hideThisView" data-id="androidHomeHide" class="androidHomeHide">
+    <image class="android-top" src="../../assets/img/android-topBar.png"></image>
+    <image class="androidHome-middle" src="../../assets/img/android-searchbar.png"></image>
+    <image class="androidHome-bottom" src="../../assets/img/android-bottom2.png"></image>
+  </view>
+</view>

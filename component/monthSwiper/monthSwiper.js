@@ -1,9 +1,12 @@
+
+const util = require('../../utils/util.js');
+
 var _monthSwiperId=1;
 
 class monthSwiper{
 	constructor(props) {
 		this.onFirstView=function(){
-			console.log(arguments," 第一个视图")
+			// console.log(arguments," 第一个视图")
 		};
 		this.onLastView=function(){
 			// console.log(arguments,"最后一个视图")
@@ -14,15 +17,20 @@ class monthSwiper{
 		this.beforeViewChange=function(){
 			// console.log(arguments,"视图移动之前")
 		};
+    this.afterSelectMonth = function () {
+      // console.log(arguments,"点击选择月份")
+    };
+  
 
 		props=props||{}
+
 
 		//获得当前Page上下文
 		const pages=getCurrentPages();
 
 		this.pageCtx = pages[pages.length-1];
 		//当前hSwiperId
-    this.id =_monthSwiperId++;
+    this.id = _monthSwiperId++;
 
 		//获取可用屏幕宽度
 		this.screenWidth=wx.getSystemInfoSync().windowWidth;
@@ -70,11 +78,12 @@ class monthSwiper{
 		this.nowView=0;
 
 
-		this.reduceDistance=parseInt(props.reduceDistance)||0;//用于计算每个视图元素的宽度 itemAllWidth=windosWidth-reduceDistance;		
+		// this.reduceDistance=parseInt(props.reduceDistance)||0;//用于计算每个视图元素的宽度 itemAllWidth=windosWidth-reduceDistance;		
 
 		//每个视图元素的宽度
-		this.itemWidth = parseInt(props.itemWidth||this.screenWidth-this.reduceDistance);
-    // this.itemWidth = 40;
+    this.swipeWidth = parseInt(this.screenWidth + this.screenWidth * 0.34);
+    this.itemWidth = 0;
+    // this.itemWidth = 0;
 
 		//视图过度动画实例
 		this.viewAnimation=wx.createAnimation({
@@ -106,15 +115,17 @@ class monthSwiper{
 		//计算结构
 		this.initStruct();
 
-    this.moveViewTo(9);
+    this.moveViewTo(0);
 
 	}
 
 	initStruct(){
 		var count=this.data.list.length;
+    this.itemWidth = Math.floor(this.swipeWidth / count);
+
 		//更新容器的宽度，默认
-		this.updateConStyle("width",count*this.itemWidth+"px",);
-		this.updateItemStyle("width",this.itemWidth+"px");
+    this.updateConStyle("width", count * this.itemWidth + "px", );
+    this.updateItemStyle("width", this.itemWidth + "px");
     // this.updateItemActivStyle();
 		// console.log("更新item的结构");
 	}
@@ -142,7 +153,7 @@ class monthSwiper{
 		var tempWidth=this.parseStyle(this.data.itemStyle)||"";
 		tempWidth[attr]=value;
 		this.data.itemStyle=this.styleStringify(tempWidth);
-    console.log(this.data);
+    // console.log(this.data);
 		this.updateData("itemStyle",this.data.itemStyle);
 
 	}
@@ -157,9 +168,13 @@ class monthSwiper{
 		this.updateData(temp,this.data.wrapperStyleValue[this.data.wrapperStyle]);
 
 	}
-  updateItemActivStyle(){
+  updateItemActivStyle(currentMonth){
+    // console.log(currentMonth)
     var list = this.data.list;
     var ifCurretn;
+    var isGreen;
+    var currentMonth = parseInt(util.getCurrentMonth());
+    // console.log(index, currentMonth);
     for (var i in list) {
         if(this.nowView == i){
           ifCurretn = true;
@@ -167,11 +182,18 @@ class monthSwiper{
           ifCurretn = false;
         }
         this.updateData('list[' + i + '].current', ifCurretn);
-        console.log(i);
-        console.log('list[' + i + '].current', ifCurretn);
+
+        if (i < currentMonth){
+          isGreen = true;
+        }else{
+          isGreen = false;
+        }
+        this.updateData('list[' + i + '].isGreen', isGreen);
+        // console.log("update"+i);
+        // console.log('list[' + i + '].current', ifCurretn);
     }
-    console.log(this.nowView);
-    console.log(list);
+    // console.log(this.nowView);
+    // console.log(list);
   }
 	/**
 	 * 解析style属性字符串为js对象
@@ -196,8 +218,8 @@ class monthSwiper{
 	registerEvent(){
 		var self=this;
 		//触摸开始事件	
-    console.log(self);
-    console.log(this.pageCtx);
+    // console.log(self);
+    // console.log(this.pageCtx);
 		// this.pageCtx["swiperTouchstart"+this.id] = function(e) {
 		// 	console.log("触摸开始");			
 		// 	self.startPos = e.changedTouches[0].clientX;
@@ -231,6 +253,38 @@ class monthSwiper{
 		// 		self.moveViewTo(self.getNowView());
 		// 	}
 		// };
+    //
+    this.pageCtx['swiperTab' + this.id] = function(e){
+      // console.log("点击",this.id,e);
+      var offsetx = parseInt(e.currentTarget.offsetLeft);
+      var index = offsetx / self.itemWidth;
+
+      // console.log(index, self.nowView);
+      var currentMonth = parseInt(util.getCurrentMonth());
+      console.log(index,currentMonth);
+
+      //暂时禁掉1234月份，因为没数据
+      console.log(index);
+      console.log(currentMonth);
+      if (index >=4 && index < currentMonth) {
+        if (index != self.nowView && index < currentMonth) {
+          self.moveViewTo(index);
+          self.afterSelectMonth(index + 1);
+        }
+      }else{
+        wx.showModal({
+          title: '提示',
+          content: '暂时还没有哦！',
+          showCancel: false,
+          success: function (res) {
+            if (res.confirm) {
+              console.log('用户点击确定');
+            }
+          }
+        });
+      }
+      
+    }
 
 	}
 
@@ -284,7 +338,7 @@ class monthSwiper{
 		this.beforeViewChange(this.data.list[this.nowView],this.nowView);
 		this.nowView=viewIndex;
 
-		this.nowTranX=-(this.itemWidth)*viewIndex+this.reduceDistance/2;
+    this.nowTranX = -(this.itemWidth) * (viewIndex + 1) + this.itemWidth/2 + this.screenWidth/2;
 		this.updateViewAnimation(this.nowTranX);
 
 
@@ -300,7 +354,7 @@ class monthSwiper{
 	}
 
 	updateViewAnimation(x){
-    console.log(x);
+    // console.log(x);
 		this.viewAnimation.translateX(x).translate3d(0).step();
 		this.updateData("swiperAnmiation",this.viewAnimation.export());
 	}

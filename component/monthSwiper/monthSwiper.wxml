@@ -4,18 +4,14 @@
 	  <view class="monthSwiper" >
       <view class="monthSwiperCon" 
             animation="{{swiperAnmiation}}" 
-            bindtouchstart="{{'swiperTouchstart'+id}}"
-            bindtouchmove="{{'swiperTouchmove'+id}}"
-            bindtouchend="{{'swiperTouchend'+id}}"
             style="{{wrapperStyleValue[wrapperStyle]}}" >
 
             <block wx:for="{{list}}" wx:key="index" >   
-                <view class="monthItem {{item.current ? 'currentItemClass':''}}" style="{{itemStyle}}">
+                <view class="monthItem {{item.current ? 'currentItemClass':''}} {{item.isGreen ? 'greenItem':''}}" 
+                      bindtap="{{'swiperTab'+id}}"
+                      style="{{itemStyle}}">
                     <template is="{{templateName}}" data="{{item,index}}"></template>
                 </view>
-                <!--<view class="monthItem {{item.current ? 'currentMonth' : ''}}" style="{{itemStyle}}></view> -->
-          
-              
             </block>
       </view>
   </view>

@@ -31,16 +31,58 @@ function getCurrentDate(){
     mm = '0' + mm
   }
 
-  today = yyyy + mm + dd;
-  var currentDay = today.toString();
+  today = yyyy.toString() + mm.toString() + dd.toString();
 
-  return currentDay;
+  return today;
+}
+
+//获取当前月份
+function getCurrentMonth() {
+  var today = new Date();
+  var mm = today.getMonth() + 1; //January is 0!
+
+  var currentMonth = mm.toString();
+
+  return currentMonth;
+}
+//获取当前时分
+function getCurrentTime() {
+  var today = new Date();
+  var hour = today.getHours();
+  var minute = today.getMinutes();
+  if (hour < 10) {
+    hour = '0' + hour
+  }
+  if (minute < 10) {
+    minute = '0' + minute
+  }
+
+  var currentTime = hour.toString() + ":" + minute.toString();
+
+  return currentTime;
+}
+//获取当前日期英文
+function getCurrentEnDate() {
+  var day_list = ['Sunday','Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  var monthList = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+  var today = new Date();
+  var day = today.getDay();
+  var month = today.getMonth(); //January is 0!
+  var date = today.getDate().toString();
+
+
+  var currentEnDate = day_list[day] + ',' + monthList[month] +" "+date;
+  return currentEnDate;
 }
 
 
 module.exports = {
   formatTime: formatTime,
-  getCurrentDate: getCurrentDate
+  getCurrentDate: getCurrentDate,
+  getCurrentMonth: getCurrentMonth,
+  getCurrentTime: getCurrentTime,
+  getCurrentEnDate: getCurrentEnDate
 }
 
 

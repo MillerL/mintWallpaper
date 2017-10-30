@@ -6,7 +6,7 @@ const monthSwiper = require('../../component/monthSwiper/monthSwiper.js');
 const util = require('../../utils/util.js');
 
 var info = "“除了文本节点以外的其他节点都无法长按选中。”";
-var wpNum = "1/30";
+var wpNum = "1";
 var monthData = [{ num: 1, en: "Jan", active: true,current:false }, 
   { num: 2, en: 'Feb', active: true, current: false}, 
   { num: 3, en: 'Mar', active: true, current:false},
@@ -24,12 +24,15 @@ var monthData = [{ num: 1, en: "Jan", active: true,current:false },
 
 var dataListPath = 'https://api.lichii.cn/wp/getDataList';
 
-var currentDay = util.getCurrentDate();
-console.log(currentDay);
-
-var listNum = 10;//默认10条，以次增加
 var wpDataList = -1;
+var Mswiper;
+var wpSwiper;
+var cMonth;
 
+//跳转传递的参数
+var selectDate;
+var selectMonth;
+var onlyMonth = false;
 
 var option = {
   data: {
@@ -38,68 +41,80 @@ var option = {
     monthSwiperVar: {},
     hSwiperVar: {},
     infoTxt: info,
-    wpNum: wpNum
+    wpIndex: wpNum,
+    wpTotal:"30"
   },
   onLoad: function () {
-  },
-  onReady: function () {
-    // console.log('onReady');
     var self = this;
+    var currentDay = util.getCurrentDate();
+    var currentMonth = util.getCurrentMonth();
+    cMonth = currentMonth;
 
-    var Mswiper = new monthSwiper({
+    console.log("当前日期：", currentDay);
+
+    getDataList(currentMonth, self, currentDay);//调用接口方法
+    selectDate = currentDay;
+    selectMonth = currentMonth;
+
+    Mswiper = new monthSwiper({
       reduceDistance: 335,
       varStr: "monthSwiperVar",
       list: monthData
     });
-    Mswiper.moveViewTo(8 - 1);
+    //选择月份
+    Mswiper.afterSelectMonth = function (index) {
+      // console.log(currentMonth);
+      
+      if (index == currentMonth) {
+        getDataList(index, self, currentDay);
+        selectDate = currentDay;
+        selectMonth = index;
+        onlyMonth = false;
+      } else {
+        getDataList(index, self);
+        selectMonth = index;
+        onlyMonth = true;
+      }
+      
+
+    }
     //实例化壁纸滑块插件
-    var wpSwiper = new hSwiper({
+    wpSwiper = new hSwiper({
       reduceDistance: 112,
       varStr: "hSwiperVar",
       list: wpDataList
     });
 
-    //请求接口数据
-    wx.request({
-      url: dataListPath, //接口地址
-      data: {
-        today: currentDay,
-        num: listNum
-      },
-      header: {
-        'content-type': 'application/json'
-      },
-      success: function (res) {
-        // console.log(res.data);
-        var data = res.data.data;
-        console.log(data);
-        var currentMonth = data[0].month -1;//当前月份
-        var index = data[0].index + "/" + data[0].total;//当前序列
-
-        self.setData({
-          "monthSwiperVar.list[0].num": data[0].month,
-          wpNum: index,
-          infoTxt: data[0].desc
-        });
-        Mswiper.moveViewTo(currentMonth);
-        wpSwiper.updateList(data);
-
-
-      }
-    });
-
     wpSwiper.onFirstView = function (data, index) {
-      console.log("当前是第" + (index + 1) + "视图", "数据是：" + data);
     };
     wpSwiper.onLastView = function (data, index) {
-      console.log("当前是第" + (index + 1) + "视图", "数据是：" + data);
+      // var dataNum;  
     };
+
     wpSwiper.afterViewChange = function (data, index) {
-      console.log("当前是第" + (index + 1) + "视图", "数据是：" + data);
+      console.log(data);
+      self.setData({
+        wpIndex: data.index + "/",
+        wpTotal: data.total,
+        infoTxt: data.desc
+      })
+      if (data.month != cMonth) {
+        Mswiper.moveViewTo(data.month - 1);
+        cMonth = data.month;
+      }
+    };
+    wpSwiper.selectedViewTap = function (data, index) {
+      var picPath = data.pic;
+      wx.navigateTo({
+        url: '../preview/preview?pic=' + picPath + '&onlyMonth=' + onlyMonth + '&selectDate=' + selectDate + '&selectMonth=' + selectMonth
+      })
     };
     wpSwiper.beforeViewChange = function (data, index) {
-      console.log("当前是第" + (index + 1) + "视图", "数据是：" + data);
+      // console.log("当前是第" + (index + 1) + "视图", "数据是：" + data);
     };
+  },
+  onReady: function () {
+    // console.log('onReady');
 
     //更新数据 
     // setTimeout(() => {
@@ -129,8 +144,8 @@ var option = {
 
   onShareAppMessage: function () {
     return {
-      title: '自定义转发标题',
-      path: '/page/user?id=123'
+      title: '壁纸是人的第二张脸。——鲁迅',
+      path: '/pages/index/index',
     }
   }
 };
@@ -138,3 +153,50 @@ var option = {
 
 Page(option);
 
+
+
+function getDataList(month, self, today){
+  var _data;
+  if (today){
+    _data={
+      today: today,
+      month:month
+    }
+  }else{
+    _data = {
+      month: month
+    }
+  };
+
+  //请求接口数据
+  wx.request({
+    url: dataListPath, //接口地址
+    data: _data,
+    header: {
+      'content-type': 'application/json'
+    },
+    success: function (res) {
+      // console.log(res.data);
+      var data = res.data.data;
+      console.log(data);
+      wpDataList = data;
+      setPageData(data, self, 0);
+    }
+  });
+}
+
+
+function setPageData(data, currpage,index){
+  var _total = data.length;
+  currpage.setData({
+    wpIndex: data[index].index + "/",
+    wpTotal: _total,
+    infoTxt: data[index].desc
+  });
+
+  var currentMonth = data[0].month - 1;//当前月份
+  Mswiper.moveViewTo(currentMonth);
+  wpSwiper.updateList(data);
+  wpSwiper.moveViewTo(0);
+
+}

@@ -10,7 +10,7 @@
             style="{{wrapperStyleValue[wrapperStyle]}}" >
 
             <block wx:for="{{list}}" wx:key="index" >   
-                <view class="item" style="{{itemStyle}}">
+                <view class="item" style="{{itemStyle}}" bindtap="{{'swiperTap'+id}}">
                     <template is="{{templateName}}" data="{{item,index}}"></template>
                 </view>
             </block>

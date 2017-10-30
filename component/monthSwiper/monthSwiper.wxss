@@ -1,9 +1,9 @@
 /*滑动样式*/
 .monthSwiper{
   /*white-space:nowrap;*/
-	height: 120rpx;
+	height: 110rpx;
 	/*overflow: hidden;*/
-  padding-top: 30rpx;
+  padding-top: 40rpx;
 	position: relative;
 }
 
@@ -23,7 +23,7 @@
 .m-num{
   text-align: center;
   font-size: 36rpx;
-  color: #9B9B9B;
+   color: #9B9B9B; 
 }
 .m-en{
   text-align: center;
@@ -37,10 +37,16 @@
   text-align: center;
   font-size: 80rpx;
   line-height: 70rpx;
-  color: #4A4A4A;
+  color: #238d89;
 }
 .currentItemClass .m-en{
   text-align: center;
   font-size: 20rpx;
-  color: #4A4A4A;
+  color: #238d89;
+}
+.greenItem .m-num{
+  color:#5db5b7;
+}
+.greenItem .m-en{
+  color:#5db5b7;
 }

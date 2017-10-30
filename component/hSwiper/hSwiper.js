@@ -1,9 +1,11 @@
+
+
 var _hSwiperId=0;
 
 class hSwiper{
 	constructor(props) {
 		this.onFirstView=function(){
-			console.log(arguments," 第一个视图")
+			// console.log(arguments," 第一个视图")
 		};
 		this.onLastView=function(){
 			// console.log(arguments,"最后一个视图")
@@ -14,6 +16,15 @@ class hSwiper{
 		this.beforeViewChange=function(){
 			// console.log(arguments,"视图移动之前")
 		};
+    this.afterPreViewChange = function () {
+      // console.log(arguments,"视图向左移动之后")
+    };
+    this.afterNextViewChange = function () {
+      // console.log(arguments,"视图向右移动之后")
+    };
+    this.selectedViewTap = function(){
+      // console.log(arguments,"点击选择壁纸")
+    };
 
 		props=props||{}
 
@@ -177,7 +188,7 @@ class hSwiper{
 		//触摸开始事件	
     console.log(self);
 		this.pageCtx["swiperTouchstart"+this.id] = function(e) {
-			console.log("触摸开始");			
+			console.log("触摸开始",this.id);			
 			self.startPos = e.changedTouches[0].clientX;
 			self.touchTime = e.timeStamp;
 		};
@@ -209,6 +220,14 @@ class hSwiper{
 				self.moveViewTo(self.getNowView());
 			}
 		};
+    //点击事件
+    this.pageCtx['swiperTap'+this.id]=function(e){
+      // var offsetx = parseInt(e.currentTarget.offsetLeft);
+      // var index = offsetx / self.itemWidth;
+      // console.log('壁纸===', self.data.list[self.nowView], self.nowView);
+
+      self.selectedViewTap(self.data.list[self.nowView], self.nowView);
+    }
 
 	}
 
@@ -256,23 +275,33 @@ class hSwiper{
 	 * 移动到指定视图，以视图的宽度为单位
 	 * @return {[type]} [description]
 	 */
-	moveViewTo(viewIndex){
+  moveViewTo(viewIndex, direction){
 		// if(viewIndex==this.nowView){
 		// 
-		this.beforeViewChange(this.data.list[this.nowView],this.nowView);
-		this.nowView=viewIndex;
+    console.log('moveViewTo', viewIndex);
+    this.beforeViewChange(this.data.list[this.nowView], this.nowView);
+    this.nowView = viewIndex;
 
-		this.nowTranX=-(this.itemWidth)*viewIndex+this.reduceDistance/2;
-		this.updateViewAnimation(this.nowTranX);
+    this.nowTranX = -(this.itemWidth) * viewIndex + this.reduceDistance / 2;
+    this.updateViewAnimation(this.nowTranX);
 
 
-		this.afterViewChange(this.data.list[this.nowView],this.nowView);
+    this.afterViewChange(this.data.list[this.nowView], this.nowView);
 
-		if(viewIndex===0){
-			this.onFirstView(this.data.list[this.nowView],this.nowView);
-		}else if(viewIndex===(this.data.list.length-1)){
-			this.onLastView(this.data.list[this.nowView],this.nowView);
-		}
+    if (direction) {
+      if (direction == "next") {
+        this.afterNextViewChange(this.nowView);   
+      } else {
+        this.afterPreViewChange(this.nowView);
+      }
+    }
+
+    if (viewIndex === 0) {
+      this.onFirstView(this.data.list[this.nowView], this.nowView);
+    } else if (viewIndex === (this.data.list.length - 1)) {
+      this.onLastView(this.data.list[this.nowView], this.nowView);
+    }
+		
 	}
 
 	updateViewAnimation(x){
@@ -288,11 +317,9 @@ class hSwiper{
 
 		var indexView=Math.abs(Math.round(this.nowTranX/this.itemWidth));
 
-
 		if(this.nowTranX>0){
 			return 0;
 		}
-
 
 		// console.log("现在的位置",this.nowTranX);
 		// console.log("现在的元素宽度",this.itemWidth);
@@ -307,26 +334,29 @@ class hSwiper{
 	}	
 
 	nextView(){
-		// console.log("跳转下一个视图");
-
-		var index=this.nowView+1;
+	  // console.log("跳转下一个视图");
+  
+		var index=this.nowView+1;    
 
 		index=index>(this.data.list.length-1)?this.data.list.length-1:index;
 		this.nowView=index;
-		this.moveViewTo(index);
-		// console.log("切换到页",this.nowView);
+		this.moveViewTo(index,'next');
+
 		return index;
 
 	}	
 
 	preView(){
 		// console.log("跳转上一个视图");
+    
 		var index=this.nowView-1;
+    
 		index=index<0?0:index;
 		this.nowView=index;		
-		this.moveViewTo(index);
+		this.moveViewTo(index,'pre');
 
 		return index;
+
 	}
 
 	updateList(list){
@@ -345,6 +375,9 @@ class hSwiper{
 	getList(){
 		return this.data.list;
 	}
+  setIndex(index){
+    this.nowView = index; 
+  }
 }
 
 module.exports=hSwiper;

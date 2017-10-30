@@ -13,31 +13,45 @@ text{
 }
 
 .wpInfoCon{
-  padding-top: 40rpx;
+  height: 160rpx;
+  position: relative;
+  padding: 40rpx 60rpx 0 60rpx;
 }
 .infoTxt{
   display: block;
   font-size:24rpx;
   text-align:center;
 }
-.wpNum{
+.indexTxt{
+  position: absolute;
+  bottom:4%;
+  left: 50%;
+  transform: translate3d(-50%,0,0);
   display: block;
   margin-top: 35rpx;
-  font-size:48rpx;
   text-align:center;
 }
+.wpNumIndex{
+  font-size:48rpx;
+
+}
+.wpNumTotal{
+  font-size:20rpx;
+  color:#9B9B9B;
+}
+.wpDate{
+  font-size: 20rpx;
+  color:#9B9B9B;
+}
 .itemSelf{
-    height: 100%;
     position: absolute;
     box-sizing:border-box;
     /*margin:10rpx;*/
-    /*padding: 10rpx;*/
     overflow: hidden;
-    box-shadow: 0 0 1px 1px rgba(0,0,0,0.1);
-    height: 95%;
+    box-shadow:0 0 12rpx 2rpx rgba(0,0,0,0.1);
+    height: 98%;
     width: 96%;
-    background-color: #999;
-    color: white;
+    background-color: #fff;
 }
 .dateSwiper{
   /*width: 100%;*/

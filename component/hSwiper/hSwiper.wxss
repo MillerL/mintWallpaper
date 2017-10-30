@@ -6,9 +6,12 @@
 }
 
 .hSwiperCon{
-	height: 856rpx;
+	height: 880rpx;
 	will-change: transform;
 	position: absolute;
+  padding-top:12rpx;
+  padding-bottom:12rpx;
+  box-sizing: border-box;
 }
 .item{
 	width: 100%;
