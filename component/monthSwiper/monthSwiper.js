@@ -261,28 +261,30 @@ class monthSwiper{
 
       // console.log(index, self.nowView);
       var currentMonth = parseInt(util.getCurrentMonth());
-      console.log(index,currentMonth);
+      // console.log(index,currentMonth);
+      // self.moveViewTo(index);
+      self.afterSelectMonth(index + 1);
 
       //暂时禁掉1234月份，因为没数据
-      console.log(index);
-      console.log(currentMonth);
-      if (index >=4 && index < currentMonth) {
-        if (index != self.nowView && index < currentMonth) {
-          self.moveViewTo(index);
-          self.afterSelectMonth(index + 1);
-        }
-      }else{
-        wx.showModal({
-          title: '提示',
-          content: '暂时还没有哦！',
-          showCancel: false,
-          success: function (res) {
-            if (res.confirm) {
-              console.log('用户点击确定');
-            }
-          }
-        });
-      }
+      // console.log(index);
+      // console.log(currentMonth);
+      // if (index >=4 && index < currentMonth) {
+      //   if (index != self.nowView && index < currentMonth) {
+      //     self.moveViewTo(index);
+      //     self.afterSelectMonth(index + 1);
+      //   }
+      // }else{
+      //   wx.showModal({
+      //     title: '提示',
+      //     content: '暂时还没有哦！',
+      //     showCancel: false,
+      //     success: function (res) {
+      //       if (res.confirm) {
+      //         console.log('用户点击确定');
+      //       }
+      //     }
+      //   });
+      // }
       
     }
 

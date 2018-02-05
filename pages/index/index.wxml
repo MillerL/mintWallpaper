@@ -3,15 +3,11 @@
 
 <view id="mainContainer">
 
-    <!--<view class="dateSwiper">
-      <view class="monthItem {{item.current ? 'currentMonth' : ''}}" wx:for="{{month}}"> 
-        <view class="m-num">{{item.num}}</view>
-        <view class="m-en">{{item.en}}</view>
-       </view>
-    </view>-->
     <template is="monthSwiper" data="{{...monthSwiperVar}}"></template>
     <template is="hSwiper" data="{{...hSwiperVar}}"></template>
+
     
+
     <view class="wpInfoCon">
       <text class="infoTxt">{{infoTxt}}</text>
       <view class="indexTxt">
@@ -19,5 +15,14 @@
       <text class="wpNumTotal">{{wpTotal}}</text> 
       <text class="wpDate">日</text>      
       </view>
+    </view>
+
+    <view class="section" id="yearPicker">
+        <picker class='p-con' mode="selector" bindchange="bindPickerChange" value="{{defaultIndex}}" range="{{yearsArray}}">
+            <view class="picker">
+              {{yearsArray[defaultIndex]}}
+            </view>
+         </picker>
+         <view class='arrow-icon'></view>
     </view>
 </view>

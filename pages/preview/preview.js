@@ -8,6 +8,7 @@ var firstLog=0;
 // var selectDateOrMonth;
 
 //页面获取的参数
+var selectYear;
 var selectMonth;
 var selectDate;
 var onlyMonth;
@@ -32,6 +33,7 @@ Page({
     var url = res.pic;
     selectMonth = res.selectMonth;
     selectDate = res.selectDate;
+    selectYear = res.selectYear;
     onlyMonth = res.onlyMonth;
     currentPic = url;
     console.log(url);
@@ -66,8 +68,12 @@ Page({
     
     
   },
+  onHide:function(){
+    picArr = [];//清空数组
+  },
   //关闭预览
   hideThisView:function(e){
+    picArr = [];//清空数组
     var self = this;
     var targetName = e.currentTarget.dataset.id;
     console.log(e);
@@ -85,53 +91,67 @@ Page({
 
   //点击下载
   downloadPic:function(){
-    console.log(currentPic);
+    console.log("onSavePicClick");
+    var downloadUrl = currentPic;
+    console.log("downloadUrl=" + downloadUrl);
+
+    if (!wx.saveImageToPhotosAlbum) {
+      wx.showModal({
+        title: '提示',
+        content: '当前微信版本过低，无法使用该功能，请升级到最新微信版本后重试。'
+      })
+      return;
+    }
+
+    // 可以通过 wx.getSetting 先查询一下用户是否授权了 "scope.writePhotosAlbum" 这个 scope  
     wx.getSetting({
       success(res) {
-        if (!res['scope.writePhotosAlbum']) {
+        console.log("getSetting: success");
+        if (!res.authSetting['scope.writePhotosAlbum']) {
+          console.log("1-没有授权《保存图片》权限");
+
+          // 接口调用询问  
           wx.authorize({
             scope: 'scope.writePhotosAlbum',
             success() {
-              // 用户已经同意小程序使用相册功能，后续调用 wx.startRecord 接口不会弹窗询问
-
-              wx.downloadFile({ //下载图片到临时路径
-                url: currentPic,
-                success: function (res) {
-                  var filePath = res.tempFilePath;
-                  //保存图片到本地相册
-                  wx.saveImageToPhotosAlbum({
-                    filePath: filePath,
-                    fail(res) {
-
-                    }
-                  })
-
+              console.log("2-授权《保存图片》权限成功");
+              util.downloadImage(downloadUrl);
+            },
+            fail() {
+              // 用户拒绝了授权  
+              console.log("2-授权《保存图片》权限失败");
+              // 打开设置页面  
+              wx.openSetting({
+                success: function (data) {
+                  console.log("openSetting: success");
+                },
+                fail: function (data) {
+                  console.log("openSetting: fail");
                 }
-              })
-
+              });
             }
           })
+        } else {
+          console.log("1-已经授权《保存图片》权限");
+          util.downloadImage(downloadUrl)
         }
+      },
+      fail(res) {
+        console.log("getSetting: success");
+        console.log(res);
       }
-    })
+
+    })  
     
   },
   // 打开提示1
   openAlert: function () {
     var dataListPath = 'https://api.lichii.cn/wp/getDataList';
-    var _data;
-    if (onlyMonth == "false"){
-      //请求月份加日期
-      _data ={
-        today: selectDate,
-        month: selectMonth
-      }
-    }else{
-      //请求月份加日期
-      _data = {
-        month: selectMonth
-      }
-    };
+    var _data = {
+      year: parseInt(selectYear),
+      month: parseInt(selectMonth)
+    }
+    console.log(_data);
 
     //请求接口数据
     wx.request({
@@ -144,10 +164,13 @@ Page({
         var data = res.data.data;
         console.log(data);
        
-        for (var i = 0; i < data.length;i++){
-          var pic = data[i].pic;
-          picArr.push(pic);
-        };
+        if (data.length>0){
+          for (var i = 0; i < data.length; i++) {
+            var pic = data[i].pic;
+            picArr.push(pic);
+          };
+        }
+        
         console.log(picArr);
         //接受数据成功显示preview页
         if (firstLog === 0) {

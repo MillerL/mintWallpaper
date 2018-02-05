@@ -35,7 +35,18 @@ function getCurrentDate(){
 
   return today;
 }
-
+//获取当年年份
+function getCurrentYear(){
+  var date = new Date;
+  var year = date.getFullYear(); 
+  return year;
+}
+//获取当日
+function getCurrentDay() {
+  var date = new Date;
+  var dd = date.getDate();
+ return dd;
+}
 //获取当前月份
 function getCurrentMonth() {
   var today = new Date();
@@ -76,13 +87,46 @@ function getCurrentEnDate() {
   return currentEnDate;
 }
 
+function downloadImage(imageUrl) {
+  // 下载文件  
+  wx.downloadFile({
+    url: imageUrl,
+    success: function (res) {
+      console.log("下载文件：success");
+      console.log(res);
+
+      // 保存图片到系统相册  
+      wx.saveImageToPhotosAlbum({
+        filePath: res.tempFilePath,
+        success(res) {
+          console.log("保存图片：success");
+          wx.showToast({
+            title: '保存成功',
+          });
+        },
+        fail(res) {
+          console.log("保存图片：fail");
+          console.log(res);
+        }
+      })
+    },
+    fail: function (res) {
+      console.log("下载文件：fail");
+      console.log(res);
+    }
+  })
+}  
+
 
 module.exports = {
   formatTime: formatTime,
   getCurrentDate: getCurrentDate,
   getCurrentMonth: getCurrentMonth,
   getCurrentTime: getCurrentTime,
-  getCurrentEnDate: getCurrentEnDate
+  getCurrentEnDate: getCurrentEnDate,
+  getCurrentYear: getCurrentYear,
+  getCurrentDay: getCurrentDay,
+  downloadImage: downloadImage
 }
 
 

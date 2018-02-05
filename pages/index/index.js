@@ -34,6 +34,8 @@ var selectDate;
 var selectMonth;
 var onlyMonth = false;
 
+var currentYear;
+
 var option = {
   data: {
     //swiper插件变量
@@ -42,17 +44,54 @@ var option = {
     hSwiperVar: {},
     infoTxt: info,
     wpIndex: wpNum,
-    wpTotal:"30"
+    wpTotal:"30",
+    yearsArray: ['2017','2018'],
+    defaultIndex:1
+  },
+  // 切换年份
+  bindPickerChange: function (e) {
+    console.log('picker发送选择改变，携带值为', e.detail.value)
+    this.setData({
+      defaultIndex: e.detail.value
+    })
+    var currentDay = util.getCurrentDay();
+    var currentMonth = util.getCurrentMonth();
+    var self = this;
+
+    if (e.detail.value==0){
+      //2017
+      currentYear =2017;
+      getDataList(currentYear, 8, self, function (data) {
+        console.log(data);
+        wpDataList = data;
+        setPageData(data, self, 0);
+        selectMonth = 8;
+      })
+    } else if (e.detail.value == 1){
+      //2018
+      currentYear = 2018;
+      getDataList(currentYear, currentMonth, self, function (data) {
+        // console.log(data);
+        wpDataList = data;
+        setPageData(data, self, currentDay);
+        selectMonth = currentMonth;
+        })
+    }
   },
   onLoad: function () {
     var self = this;
-    var currentDay = util.getCurrentDate();
+    currentYear = util.getCurrentYear();
+    var currentDay = util.getCurrentDay();
     var currentMonth = util.getCurrentMonth();
+    // console.log(currentMonth);
     cMonth = currentMonth;
-
     console.log("当前日期：", currentDay);
 
-    getDataList(currentMonth, self, currentDay);//调用接口方法
+    getDataList(currentYear,currentMonth, self,function(data){
+      // console.log(data);
+      wpDataList = data;
+      setPageData(data, self, currentDay);
+    });//调用接口方法
     selectDate = currentDay;
     selectMonth = currentMonth;
 
@@ -62,21 +101,37 @@ var option = {
       list: monthData
     });
     //选择月份
-    Mswiper.afterSelectMonth = function (index) {
-      // console.log(currentMonth);
-      
-      if (index == currentMonth) {
-        getDataList(index, self, currentDay);
-        selectDate = currentDay;
-        selectMonth = index;
-        onlyMonth = false;
-      } else {
-        getDataList(index, self);
-        selectMonth = index;
-        onlyMonth = true;
-      }
-      
 
+    Mswiper.afterSelectMonth = function (month) {
+      // console.log(currentMonth);
+      // console.log(index);
+      // console.log(selectMonth);
+      if (month != selectMonth) {
+        getDataList(currentYear,month, self, function (data) {
+          console.log(data);
+          if (data.length<=0){
+              //没有数据
+              alertInfo("再等等。。");
+          }else{
+            wpDataList = data;
+           
+            if (currentYear == 2018){
+              if (currentMonth != month) {
+                setPageData(data, self, 0);
+                selectDate = 0;
+              } else {
+                setPageData(data, self, currentDay);
+                Mswiper.moveViewTo(currentDay);
+                selectDate = currentDay;
+              }
+            }else{
+              setPageData(data, self, 0);
+              selectDate = 0;
+            }
+            selectMonth = month;
+          }
+        });
+      }
     }
     //实例化壁纸滑块插件
     wpSwiper = new hSwiper({
@@ -92,7 +147,10 @@ var option = {
     };
 
     wpSwiper.afterViewChange = function (data, index) {
-      console.log(data);
+      console.log('afterViewChange');
+      console.log(index);
+      selectDate = index;
+      
       self.setData({
         wpIndex: data.index + "/",
         wpTotal: data.total,
@@ -105,8 +163,9 @@ var option = {
     };
     wpSwiper.selectedViewTap = function (data, index) {
       var picPath = data.pic;
+      console.log(picPath);
       wx.navigateTo({
-        url: '../preview/preview?pic=' + picPath + '&onlyMonth=' + onlyMonth + '&selectDate=' + selectDate + '&selectMonth=' + selectMonth
+        url: '../preview/preview?pic=' + picPath + '&onlyMonth=' + onlyMonth + '&selectDate=' + selectDate + '&selectYear=' + currentYear +'&selectMonth=' + selectMonth
       })
     };
     wpSwiper.beforeViewChange = function (data, index) {
@@ -115,26 +174,6 @@ var option = {
   },
   onReady: function () {
     // console.log('onReady');
-
-    //更新数据 
-    // setTimeout(() => {
-    //   console.log("3 s 后更新列表数据");
-    //   //3 s 后更新列表数据
-    //   this.setData({
-    //     // "monthSwiperVar.list[0].num": "222",
-    //     // "hSwiperVar.list[0]": "1",
-    //     wpNum: "1/22"
-    //   });
-    // }, 3000);
-
-    // setTimeout(() => {
-    //   console.log("5s后更新数据 并且更新视图");
-
-    //   //5s后更新数据 并且更新视图
-    //   // var oldList = swiper.getList();
-    //   // swiper.updateList(oldList.concat([11, 23, 45]));
-    // }, 5000);
-
 
   },
   changeMonth: function () {
@@ -154,19 +193,12 @@ var option = {
 Page(option);
 
 
-
-function getDataList(month, self, today){
+function getDataList(year,month, self,onGetData){
   var _data;
-  if (today){
-    _data={
-      today: today,
-      month:month
-    }
-  }else{
-    _data = {
-      month: month
-    }
-  };
+  _data = {
+    year: year,
+    month: month
+  }
 
   //请求接口数据
   wx.request({
@@ -176,27 +208,45 @@ function getDataList(month, self, today){
       'content-type': 'application/json'
     },
     success: function (res) {
-      // console.log(res.data);
-      var data = res.data.data;
-      console.log(data);
-      wpDataList = data;
-      setPageData(data, self, 0);
+      onGetData(res.data.data);
     }
   });
 }
 
 
 function setPageData(data, currpage,index){
+  // console.log(data[index].desc);
+  console.log(index);
+  var _index;
+  if(index==0){
+    _index =0
+  }else{
+    _index = index - 1
+  }
   var _total = data.length;
   currpage.setData({
-    wpIndex: data[index].index + "/",
+    wpIndex: data[_index].index + "/",
     wpTotal: _total,
-    infoTxt: data[index].desc
+    infoTxt: data[_index].desc
   });
+  console.log(data);
 
   var currentMonth = data[0].month - 1;//当前月份
   Mswiper.moveViewTo(currentMonth);
   wpSwiper.updateList(data);
-  wpSwiper.moveViewTo(0);
+  wpSwiper.moveViewTo(_index);
 
+}
+
+function alertInfo(title){
+  wx.showModal({
+    title: '提示',
+    content: title,
+    showCancel: false,
+    success: function (res) {
+      if (res.confirm) {
+        console.log('用户点击确定');
+      }
+    }
+  });
 }
