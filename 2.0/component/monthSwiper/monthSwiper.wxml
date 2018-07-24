@@ -1,0 +1,18 @@
+<import src="../../component/monthSwiper/monthSwiperTemplate.wxml"/>
+
+<template name="monthSwiper">
+	  <view class="monthSwiper" >
+      <view class="monthSwiperCon" 
+            animation="{{swiperAnmiation}}" 
+            style="{{wrapperStyleValue[wrapperStyle]}}" >
+
+            <block wx:for="{{list}}" wx:key="index" >   
+                <view class="monthItem {{item.current ? 'currentItemClass':''}} {{item.isGreen ? 'greenItem':''}}" 
+                      bindtap="{{'swiperTab'+id}}"
+                      style="{{itemStyle}}">
+                    <template is="{{templateName}}" data="{{item,index}}"></template>
+                </view>
+            </block>
+      </view>
+  </view>
+</template>

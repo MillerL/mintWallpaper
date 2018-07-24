@@ -1,0 +1,186 @@
+.container{
+  width: 100%;
+  height: 100%;
+  overflow:hidden
+
+}
+.main-pic{
+  width: 100%;
+  height: 100%
+
+}
+#info-icon{
+  position: absolute;
+  bottom: 4%;
+  left: 5%;
+  width: 65rpx;
+  height: 65rpx;
+}
+#download-icon{
+  position: absolute;
+  bottom: 4%;
+  left: 44%;
+  width: 86rpx;
+  height: 86rpx;
+}
+#view-icon{
+  position: absolute;
+  bottom: 5%;
+  right: 5%;
+  width: 65rpx;
+  height: 40rpx;
+}
+#download-icon image{
+  width: 86rpx;
+  height: 86rpx;
+}
+#info-icon image{
+  width: 65rpx;
+  height: 65rpx;
+}
+#view-icon image{
+  width: 65rpx;
+  height: 40rpx;
+}
+
+/*IOS 预览页*/
+.iosLockHide{
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.ios-top{
+  position: absolute;
+  top: 1%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 727rpx;
+  height: 20rpx;
+}
+.ios-middle{
+  position: absolute;
+  top: 160rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  text-shadow: 2rpx 2rpx 10rpx #999;
+}
+.ios-time{
+  display: block;
+  font-size: 154rpx;
+  line-height: 150rpx;
+  color: white;
+  text-align: center;
+}
+.ios-date{
+  display:block;
+  font-size: 44rpx;
+  line-height: 44rpx;
+  color: white;
+  text-align: center;
+  margin-top: 10rpx;
+  text-transform: capitalize; 
+}
+.ios-bottom{
+  width: 305rpx;
+  height: 78rpx;
+  position: absolute;
+  bottom: 1%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.iosHomeHide{
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.iosHomeHide .iosHome-middle{
+  width: 750rpx;
+  height: 701rpx;
+  position: absolute;
+  top: 5%;
+  left: 0;
+}
+.iosHomeHide .iosHome-bottom{
+  width: 750rpx;
+  height: 214rpx;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+
+
+/*ANDROID PAGE CSS*/
+.androidLockHide{
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bcakground:rgba(0,0,0,0.5);
+}
+.android-top{
+  position: absolute;
+  top: 1%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 683rpx;
+  height: 35rpx;
+}
+.android-middle{
+  position: absolute;
+  top: 160rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  text-shadow: 2rpx 2rpx 14rpx #999;
+}
+.android-middle .android-time{
+  display: block;
+  font-size: 220rpx;
+  line-height: 160rpx;
+  color: white;
+  text-align: center;
+}
+.android-middle .android-date{
+  display: block;
+  font-size: 33rpx;
+  line-height: 33rpx;
+  color: white;
+  text-align: center;
+  margin-top: 14rpx;
+  text-transform:uppercase;
+}
+.android-bottom{
+  width: 668rpx;
+  height: 44rpx;
+  position: absolute;
+  bottom: 3%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.androidHomeHide{
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.androidHome-middle{
+  position: absolute;
+  top: 78rpx;
+  left: 50%;
+  width:725rpx;
+  height:109rpx;
+  transform: translateX(-50%);
+}
+.androidHome-bottom{
+  position: absolute;
+  bottom: 3%;
+  left: 50%;
+  width:684rpx;
+  height:265rpx;
+  transform: translateX(-50%);
+}

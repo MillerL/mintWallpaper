@@ -1,0 +1,8 @@
+<template name="monthSwiperItem">
+   <view class="m-num">{{item.num}}</view>
+   <view class="m-en">{{item.en}}</view>
+</template>
+
+<template name="templateb">
+	{{item}}
+</template>

@@ -1,0 +1,10 @@
+{
+  "disableScroll":true,
+  "navigationBarTitleText": "薄荷壁纸",
+  "usingComponents": {
+    "zan-button": "../../../component/ui/btn/index",
+    "zan-button-group": "../../../component/ui/btn-group/index",
+    "zan-panel": "../../../component/ui/panel/index",
+    "doc-page": "../../../component/doc-page/index"
+  }
+}
